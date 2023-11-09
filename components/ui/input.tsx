@@ -1,12 +1,15 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
 
-export interface InputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {}
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
+    const handleTouchStart = (e: React.TouchEvent<HTMLInputElement>) => {
+      // Prevent zooming on touchstart
+      e.preventDefault();
+    };
+
     return (
       <input
         type={type}
@@ -15,11 +18,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className
         )}
         ref={ref}
+        onTouchStart={handleTouchStart}
         {...props}
       />
     )
   }
 )
+
 Input.displayName = "Input"
 
 export { Input }
