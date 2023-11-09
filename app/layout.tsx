@@ -14,6 +14,7 @@ const font = Open_Sans({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Discord',
   description: 'Created by ToiznerD',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no'
 }
 
 export default function RootLayout({
@@ -24,12 +25,6 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <Head>
-            <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-            />
-        </Head>
         <body className={cn(font.className, "bg-white dark:bg-[#313338]")}>
           <ThemeProvider
             attribute="class"
