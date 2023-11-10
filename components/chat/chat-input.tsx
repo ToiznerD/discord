@@ -12,10 +12,11 @@ import {
     FormItem,
 } from "@/components/ui/form"
 import { Input } from '@/components/ui/input'
-import { Plus } from "lucide-react";
+import { Plus, SendHorizonal } from "lucide-react";
 import { useModal } from "@/hooks/use-modal-store";
 import { EmojiPicker } from "../emoji-picker";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 
 interface ChatInputProps {
@@ -46,6 +47,7 @@ export const ChatInput = ({
     })
 
     const isLoading = form.formState.isSubmitting;
+    const [isInputEmpty, setIsInputEmpty] = useState(true);
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -58,10 +60,16 @@ export const ChatInput = ({
 
             form.reset()
             router.refresh();
+            setIsInputEmpty(true);
         } catch (error) {
             console.log(error)
         }
     }
+
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const isEmpty = event.target.value.trim() === "";
+        setIsInputEmpty(isEmpty);
+    };
 
     return (
         <Form {...form}>
@@ -73,18 +81,36 @@ export const ChatInput = ({
                         <FormItem>
                             <FormControl>
                                 <div className="relative p-4 pb-6">
-                                    <button
-                                        type="button"
-                                        onClick={() => onOpen("messageFile", {apiUrl, query})}
-                                        className="absolute top-7 left-8 h-[24px] w-[24px] bg-zinc-500 dark:bg-zinc-400 hover:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center"
-                                    >
-                                        <Plus className="text-white dark:text-[#313338]"/>
-                                    </button>
+                                    {isInputEmpty ? (
+                                        <>
+                                        <button
+                                            type="button"
+                                            onClick={() => onOpen("messageFile", {apiUrl, query})}
+                                            className="absolute top-7 left-8 h-[24px] w-[24px] bg-zinc-500 dark:bg-zinc-400 hover:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center"
+                                        >
+                                            <Plus className="text-white dark:text-[#313338]"/>
+                                        </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                        <button
+                                            type="button"
+                                            onClick={form.handleSubmit(onSubmit)}
+                                            className="absolute top-7 left-8 h-[24px] w-[24px] bg-zinc-500 dark:bg-zinc-400 hover:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center"
+                                        >
+                                            <SendHorizonal className="text-white dark:text-[#313338]"/>
+                                        </button>
+                                        </>  
+                                    )}
                                     <Input
                                         disabled={isLoading}
                                         className="px-14 py-6 bg-zinc-200/90 dark:bg-zinc-700/75 border-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0 text-zinc-600 dark:text-zinc-200"
                                         placeholder={`Message ${type === "conversation" ? name : "#" + name}`}
                                         {...field}
+                                        onChange={(e) => {
+                                            handleInputChange(e);
+                                            field.onChange(e);
+                                        }}
                                     />
                                     <div className="absolute top-7 right-8">
                                         <EmojiPicker
