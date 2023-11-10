@@ -14,7 +14,8 @@ interface MemberIdPageProps {
         serverId: string;
     },
     searchParams: {
-        video?: boolean
+        video?: boolean;
+        audio?: boolean;
     }
 }
 
@@ -52,6 +53,7 @@ const MemberIdPage = async ({
 
     const otherMember = memberOne.profileId === profile.id ? memberTwo : memberOne;
 
+
     return ( 
         <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
             <ChatHeader
@@ -67,7 +69,14 @@ const MemberIdPage = async ({
                     audio={true}
                 />
             )}
-            {!searchParams.video && (
+            {searchParams.audio && (
+                <MediaRoom
+                    chatId={conversation.id}
+                    video={false}
+                    audio={true}
+                />
+            )}
+            {!searchParams.video && !searchParams.audio && (
                 <>
                     <ChatMessages
                         member={currentMember}
